@@ -1,0 +1,46 @@
+package com.dtdc.demo_desk.servlets;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.dtdc.demo_desk.model.Customers;
+import com.dtdc.demo_desk.utility.Utility;
+
+@WebServlet(urlPatterns = "/updateCustomers")
+public class UpdateCustomers extends HttpServlet{
+	private static List<Customers> customerList = new ArrayList<Customers>();
+	
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//		customerList = 
+		List<Customers> newCustomerList = new ArrayList<Customers>();
+		if (customerList.size() > newCustomerList.size()) {
+			addCustomer(newCustomerList);
+		} else if(customerList.size() < newCustomerList.size()) {
+			removeCustomer(newCustomerList);
+		}
+	}
+	
+	private static void addCustomer(List<Customers> newList) {
+		Utility.entityTransaction.begin();
+		for (int i = customerList.size(); i <newList.size() ; i++) {
+			Utility.entityManager.persist(newList.get(i));
+		}
+		Utility.entityTransaction.commit();
+	}
+	
+	private static void removeCustomer(List<Customers> newList) {
+//		Utility.entityTransaction.begin();
+//		for (int i = newList.size(); i <customerList.size() ; i++) {
+//			Utility.entityManager.remove(newList.get(i));
+//		}
+//		Utility.entityTransaction.commit();
+	}
+}

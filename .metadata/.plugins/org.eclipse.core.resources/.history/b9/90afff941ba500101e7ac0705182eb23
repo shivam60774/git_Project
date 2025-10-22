@@ -1,0 +1,39 @@
+package com.dtdc.demo_desk.servlets;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.dtdc.demo_desk.model.Shipment;
+import com.dtdc.demo_desk.utility.Utility;
+import com.google.gson.Gson;
+
+@WebServlet(urlPatterns = "/searchByName")
+public class SearchByName extends HttpServlet{
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String name = req.getParameter("name");
+		System.out.println(name);
+		//Search data from sender's name
+		List<Shipment> shipmentList = Utility.entityManager.createQuery("SELECT s FROM Shipment s WHERE s.consignor_name =: name",Shipment.class)
+										.setParameter("name", name).getResultList();
+		PrintWriter writer = resp.getWriter();
+		if (shipmentList != null) {
+			resp.setContentType("application/json");
+			Gson gson = new Gson();
+			String jsonList = gson.toJson(shipmentList);
+			writer.write(jsonList);
+		}
+		else {
+			writer.write("{}");
+		}
+		writer.flush();
+	}
+
+}

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login / Register Toggle with Rotation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { min-height: 100vh; display: grid; place-items: center; background:#f3f5f9; }
+
+    /* Container anchors the absolute overlay */
+    #flexBox {
+      position: relative;
+      width: 900px;
+      max-width: 95vw;
+      height: 520px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,.15);
+      background: #fff;
+      transition: transform 0.6s ease;
+    }
+
+    /* Rotate 360 degrees */
+    #flexBox.rotate {
+      transform: rotateY(360deg);
+
+    }
+
+    /* Two halves for forms */
+    .item {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      padding: 32px 24px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      z-index: 1; /* under overlay */
+    }
+    #loginBox { left: 0; }
+    #registerBox { right: 0; }
+
+    .head { text-align: center; margin-bottom: 12px; color: #1464dd; font-weight: 700; font-size: 22px; }
+    form { display: grid; gap: 12px; }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #e2e6ee;
+      background: #f8efe3;
+    }
+    .login, .redirect {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 600;
+      width: fit-content;
+    }
+    .login { background: #1464dd; color: #fff; }
+    .redirect { background: #e9eefb; color:#0b2e6b; }
+    .anchor a { text-decoration: none; color: #333; }
+
+    .bottomText { margin-top: auto; color: gray; display: grid; gap: 8px; }
+
+    /* The sliding overlay that hides one side at a time */
+    #imageHolder {
+      position: absolute;
+      top: 0;
+      left: 50%;          /* start covering REGISTER side */
+      width: 50%;
+      height: 100%;
+      z-index: 5;         /* above forms */
+      transition: transform 0.6s ease;
+      background: url("login_image.png");
+      background-size: cover;
+      opacity: 100%;
+      transform: translateX(360deg); /* default no transform */
+    }
+    /* When moved, it slides left to cover LOGIN side */
+    #imageHolder.moveLeft {
+      transform: translateX(-100%);
+    }
+  </style>
+</head>
+<body>
+  <div id="flexBox">
+    <!-- Login (left) -->
+    <div id="loginBox" class="item">
+      <form action="fetchData" method="post">
+        <p class="head">Sign in</p>
+        <input type="email" class="userInput" placeholder="example@gmail.com" name="user" >
+        <input type="password" class="userInput" placeholder="Password@1234" name="password">
+        <button class="login" type="submit">Log in</button>
+        <p class="anchor"><a href="#">Don't Remember Your Password?</a></p>
+        <!-- IMPORTANT: type="button" so it doesn’t submit the form -->
+        <button type="button" class="redirect" onclick="showRegister()">Sign Up</button>
+      </form>
+      <div class="bottomText">
+        <p><i class="fa-solid fa-face-smile"></i>&nbsp;Easy to Use</p>
+        <p><i class="fa-solid fa-globe"></i>&nbsp;Browser Compatible</p>
+        <p><i class="fa-solid fa-circle-user"></i>&nbsp;Only for MF2308</p>
+      </div>
+    </div>
+
+    <!-- Register (right) -->
+  <!--    <div id="registerBox" class="item">
+      <form action="#" method="post" onsubmit="return false;">
+        <p class="head">Sign Up</p>
+        <input type="text" class="userInput" placeholder="John Doe" required>
+        <input type="email" class="userInput" placeholder="example@gmail.com" required>
+        <input type="password" class="userInput" placeholder="Password@1234" required>
+        <button class="login" type="submit">Create Account</button>
+        <p class="anchor">Please Remember Your Password</p>
+        <!-- IMPORTANT: type="button" so it doesn’t submit the form 
+        <button type="button" class="redirect" onclick="showLogin()">Log in</button>
+      </form>
+      <div class="bottomText">
+        <p><i class="fa-solid fa-face-smile"></i>&nbsp;Easy to Use</p>
+        <p><i class="fa-solid fa-globe"></i>&nbsp;Browser Compatible</p>
+        <p><i class="fa-solid fa-circle-user"></i>&nbsp;Only for MF2308</p>
+      </div>
+    </div>
+
+    <!-- The cover 
+    <div id="imageHolder"></div>
+  </div> 
+
+  <script>
+    const overlay = document.getElementById('imageHolder');
+    const container = document.getElementById('flexBox');
+
+    function showRegister() {
+      container.classList.add('rotate');
+      overlay.classList.add('moveLeft');
+    }
+
+    function showLogin() {
+      container.classList.add('rotate');
+      overlay.classList.remove('moveLeft');
+    }
+
+    // Reset rotation after animation so it can rotate again next time
+    container.addEventListener('transitionend', (e) => {
+      if (e.propertyName === 'transform') {
+        container.classList.remove('rotate');
+      }
+    });
+  </script> -->
+</body>
+</html>

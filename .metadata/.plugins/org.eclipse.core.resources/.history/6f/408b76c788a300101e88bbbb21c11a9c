@@ -1,0 +1,5 @@
+package com.dtdc.demo_desk.servlets;
+
+public class GetCustomers {
+
+}

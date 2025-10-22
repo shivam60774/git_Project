@@ -1,0 +1,5 @@
+INDEX VERSION 1.134
+D:\DTDC\TrackSheet\DTDC-Desk\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2617144259.index
+\frontend_demo\src\main\resources
+D:\DTDC\TrackSheet\DTDC-Desk\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\865445753.index
+\demo_desk\src\main\resources

@@ -1,0 +1,111 @@
+const searchForm = document.getElementById('searchForm');
+const customerNameSelect = document.getElementById('customerName');
+const pdfContainer = document.getElementById('pdfContainer');
+const pdfPreview = document.getElementById('pdfPreview');
+const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+
+let currentPdfBlobUrl = null;
+
+// Fetch customer names from backend
+async function fetchCustomerNames() {
+    try {
+        const response = await fetch('/demo_desk/getCustomers'); // Replace with your actual API endpoint
+        if (!response.ok) throw new Error('Failed to fetch customer names');
+        const customers = await response.json();
+        return customers;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+// Populate dropdown with customer names
+function populateCustomerNames(customers) {
+    customerNameSelect.innerHTML = '<option value="" disabled selected>Select a customer</option>';
+
+    customers.forEach(customer => {
+        const option = document.createElement('option');
+        option.value = customer.name || customer;
+        option.textContent = customer.name || customer;
+        customerNameSelect.appendChild(option);
+    });
+}
+
+// Generate PDF from shipment data
+async function generatePdf(shipments, customerName) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text(`Shipments for Customer: ${customerName}`, 14, 22);
+
+    const columns = [
+        { header: 'Tracking Number', dataKey: 'trackingNumber' },
+        { header: 'Date', dataKey: 'date' },
+        { header: 'Details', dataKey: 'details' }
+    ];
+
+    shipments.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    const rows = shipments.map(s => columns.map(col => s[col.dataKey] || ''));
+
+    doc.autoTable({
+        startY: 30,
+        head: [columns.map(col => col.header)],
+        body: rows,
+        styles: { fontSize: 10 },
+        headStyles: { fillColor: [41, 128, 185] },
+        theme: 'striped',
+        margin: { left: 14, right: 14 }
+    });
+
+    const pdfBlob = doc.output('blob');
+
+    if (currentPdfBlobUrl) {
+        URL.revokeObjectURL(currentPdfBlobUrl);
+    }
+
+    currentPdfBlobUrl = URL.createObjectURL(pdfBlob);
+    pdfPreview.src = currentPdfBlobUrl;
+    pdfContainer.style.display = 'block';
+}
+
+// Download PDF button click handler
+downloadPdfBtn.addEventListener('click', () => {
+    if (!currentPdfBlobUrl) return;
+
+    const a = document.createElement('a');
+    a.href = currentPdfBlobUrl;
+    a.download = 'shipments.pdf';
+    a.click();
+});
+
+// On page load, fetch and populate customer names
+window.addEventListener('DOMContentLoaded', async () => {
+    const customers = await fetchCustomerNames();
+    populateCustomerNames(customers);
+});
+
+// Fetch shipment data by customer name
+async function fetchShipmentByCustomerName(customerName) {
+    try {
+        const response = await fetch(`/api/shipments?customerName=${encodeURIComponent(customerName)}`);
+        if (!response.ok) throw new Error('Failed to fetch shipment data');
+        const shipments = await response.json();
+        return shipments;
+    } catch (error) {
+        console.error(error);
+        alert('Error fetching shipment data');
+        return [];
+    }
+}
+
+// Handle form submission
+searchForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const customerName = customerNameSelect.value;
+    if (!customerName) return;
+
+    const shipments = await fetchShipmentByCustomerName(customerName);
+    await generatePdf(shipments, customerName);
+});

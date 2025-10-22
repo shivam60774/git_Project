@@ -1,0 +1,95 @@
+package com.dtdc.demo_desk.servlets;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.dtdc.demo_desk.model.Shipment;
+import com.dtdc.demo_desk.utility.SearchUtility;
+import com.dtdc.demo_desk.utility.Utility;
+
+@WebServlet(urlPatterns = "/updateShipment")
+public class UpdateShipment extends HttpServlet{
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		//Instead of new shipment i want the same previous shipment to get updated
+		Shipment shipment = new Shipment();
+		PrintWriter writer = resp.getWriter();
+		try {
+			String date = req.getParameter("date").trim();
+			String cnote = req.getParameter("cNote");
+			String content = req.getParameter("content");
+			String consignorName = req.getParameter("consignorName");
+			long consignorMob = Long.parseLong(req.getParameter("consignorMob").trim());
+			String consigneeName = req.getParameter("consigneeName");
+			long consigneeMob = Long.parseLong(req.getParameter("consigneeMob").trim());
+			String consigneeAddress = req.getParameter("consigneeAddress");
+			String destination = req.getParameter("destination");
+			int pincode = Integer.parseInt(req.getParameter("pincode").trim());
+			int noOfPieces = Integer.parseInt(req.getParameter("pieces").trim());
+			double actualWeight = Double.parseDouble(req.getParameter("actualWeight").trim());
+			String dimensions = req.getParameter("dimensions");
+			String riskSurcharge = req.getParameter("riskSurcharge");
+			double declaredValue = Double.parseDouble(req.getParameter("declaredValue").trim());
+			
+			shipment.setEntry_date(date);
+			shipment.setTracking_no(cnote);
+			shipment.setConsignor_name(consignorName);
+			shipment.setConsignor_contact(consignorMob);
+			shipment.setConsignee_name(consigneeName);
+			shipment.setConsignee_contact_number(consigneeMob);
+			shipment.setConsignee_address(consigneeAddress);
+			shipment.setDestination(destination);
+			shipment.setPincode(pincode);
+			shipment.setNo_of_pieces(noOfPieces);
+			shipment.setActual_weight(actualWeight);
+			shipment.setShipment_dimension(dimensions);
+			shipment.setShipment_type(content);
+			shipment.setRisk_surcharge(riskSurcharge);
+			shipment.setDeclared_value(declaredValue);
+		} catch (Exception e) {
+			writer.print("<html><body>");
+			writer.print("alert(\"Please Enter Data Properly\")");
+			writer.print("</body></html>");
+			e.printStackTrace();
+			
+		}
+		
+		
+		
+		try {
+			Utility.entityTransaction.begin();
+			
+			if (Utility.entityManager.find(Shipment.class, shipment.getTracking_no()) == null) {
+				Utility.entityManager.persist(shipment);
+			}else {
+				writer.print("<html><script>");
+				writer.print("alert(\"Shipment already exists.Recheck Docket number\"");
+				writer.print("</script></html>");
+			}
+			
+			Utility.entityTransaction.commit();
+			
+			writer.print("<html><body>");
+			writer.print("<h2 style=\"color:green\">Shipment Data Saved Sucessfully</h2>");
+			writer.print("</body></html>");
+		} catch (Exception e) {
+			e.printStackTrace();
+			writer.print("<html><body>");
+			writer.print("<h2 style=\"color:orange\">Something went wrong</h2>");
+			writer.print("</body></html>");
+		}
+		
+		RequestDispatcher requestDispatcher = req.getRequestDispatcher("singleShipmentInsert.html");
+		requestDispatcher.include(req, resp);
+	}
+	
+	
+}

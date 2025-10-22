@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 2 elements to &apos;data&apos;&#x0D;&#x0A;- Original project: &apos;desk&apos;&#x0D;&#x0A;- Destination element: &apos;data&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     demoSheet.xlsx&#x0D;&#x0A;     newDemoData.xlsx" description="Copy files" element1="data/demoSheet.xlsx" element2="data/newDemoData.xlsx" files="2" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1754983254456" target="/copy_desk/data" units="0" version="1.0"/>
+</session>

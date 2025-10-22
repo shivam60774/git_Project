@@ -1,0 +1,33 @@
+package com.dtdc.demo_desk.servlets;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.dtdc.demo_desk.utility.SearchUtility;
+
+@WebServlet(urlPatterns = "/updateShipment")
+public class UpdateShipment extends HttpServlet{
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String shipmentJsonData = SearchUtility.searchShipment(req);
+		PrintWriter writer = resp.getWriter();
+		if (shipmentJsonData != null) {
+			resp.setContentType("application/json");
+			
+			writer.print(shipmentJsonData);
+		}else {
+			writer.print("{}");
+		}
+		writer.flush();
+		
+	}
+	
+	
+}

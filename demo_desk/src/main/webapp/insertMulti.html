@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Insert Multi Shipments</title>
+    <link rel="stylesheet" href="assets/styles/insertMulti.css">
+    
+</head>
+
+<body>
+    <header>
+        <div class="flex items-center space-x-8">
+            <div class="logo">
+                <img src="assets/images/logo.jpg" alt="Company logo with " />
+                <span>Logix</span>
+            </div>
+            <div class="search-container">
+                <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="" placeholder="Search..." class="search-input" />
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button class="notification-btn" aria-label="Notifications">
+                <svg class="notification-bell" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                </svg>
+                <span class="notification-ping">
+                    <span class="ping-animate"></span>
+                    <span class="ping-dot"></span>
+                </span>
+            </button>
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f5ad795e-453e-4367-a47e-6fde6d3b84ec.png" alt="User  profile picture showing a person with short hair and a friendly smile" />
+                </div>
+                <span>User</span>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <nav class="sidebar-nav" aria-label="Sidebar Navigation">
+                <a href="dashboard.html">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="apps.html" class="active" aria-current="page">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="3" y1="9" x2="21" y2="9"></line>
+                        <line x1="9" y1="21" x2="9" y2="9"></line>
+                    </svg>
+                    Apps
+                </a>
+                <a href="#">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a7.9 7.9 0 01-1.4 2.4l-1.4-1.4a7.9 7.9 0 01-2.4 1.4"></path>
+                        <path d="M4.6 9a7.9 7.9 0 011.4-2.4l1.4 1.4a7.9 7.9 0 012.4-1.4"></path>
+                    </svg>
+                    Settings
+                </a>
+                <a href="#">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M17 16l4-4m0 0l-4-4m4 4H7"></path>
+                        <path d="M3 12h4"></path>
+                    </svg>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+        <main class="content" role="main">
+    <form id="shipmentForm" action="insertMulti" method="post">
+     <input type="hidden" id="rowCount" name="rowCount" value="1">
+        <div class="card">
+            <h1>Insert Shipment Details</h1>
+            <div class="actions">
+                <button id="addRowBtn" class="btn" type="button" aria-label="Add new shipment row">Add Row</button>
+                <button id="removeRowBtn" class="btn btn-danger" type="button" aria-label="Remove last shipment row">Remove Row</button>
+            </div>
+            <div class="table-wrapper" role="region" aria-label="Shipment details table">
+                <table id="shipmentTable" aria-describedby="tableDesc">
+                
+                   <!-- <caption id="tableDesc" class="sr-only">Table to input shipment details with multiple columns</caption> -->
+                    <thead>
+                        <tr>
+                            <th scope="col">Sr No</th>
+                            <th scope="col" class="cnote">C Note</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Consignor's Name</th>
+                            <th scope="col">Mob No.</th>
+                            <th scope="col">Consignee's Name</th>
+                            <th scope="col">Consignee's Address</th>
+                            <th scope="col">Mob No.</th>
+                            <th scope="col">Content</th>
+                            <th scope="col">Declared Value</th>
+                            <th scope="col">No. of Pieces</th>
+                            <th scope="col">Actual Weight</th>
+                            <th scope="col">Dimensions</th>
+                            <th scope="col">Destination</th>
+                            <th scope="col">Pincode</th>
+                            <th scope="col">RISK SURCHARGE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    
+                        <!-- Rows will be inserted here by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="actions" style="margin-top: 1rem;">
+                <button type="submit" class="btn" aria-label="Save shipment details">Save</button>
+            </div>
+        </div>
+    </form>
+</main>
+
+    </div>
+   <script src="assets/js/insertMulti.js"></script>
+</body>
+
+</html>

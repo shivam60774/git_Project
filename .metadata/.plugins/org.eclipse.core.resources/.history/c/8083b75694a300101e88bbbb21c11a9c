@@ -1,0 +1,73 @@
+package com.dtdc.demo_desk.servlets;
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.dtdc.demo_desk.model.Customers;
+import com.dtdc.demo_desk.utility.Utility;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+@WebServlet(urlPatterns = "/updateCustomers")
+public class UpdateCustomers extends HttpServlet{
+	private static List<Customers> customerList = new ArrayList<Customers>();
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//		// Set encoding and content type
+        req.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json");
+
+        // 1️ Read JSON body from the request
+        StringBuilder jsonBuffer = new StringBuilder();
+        String line;
+        try (BufferedReader reader = req.getReader()) {
+            while ((line = reader.readLine()) != null) {
+                jsonBuffer.append(line);
+            }
+        }
+        String json = jsonBuffer.toString();
+
+        // 2️ Parse JSON → List<String> using Gson
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<String>>() {}.getType();
+        List<String> newList = gson.fromJson(json, listType);
+        
+        // 3️ Use the data (e.g., save to DB)
+        System.out.println("Received Customers: " + newList);
+        addCustomer(newList);
+
+        // 4️ Send response back to frontend
+        try (PrintWriter out = resp.getWriter()) {
+            out.write("{\"status\": \"success\", \"count\": " + newList.size() + "}");
+        }
+	}
+	
+	private static void addCustomer(List<String> newList) {
+		Utility.entityTransaction.begin();
+		for (String customer : newList) {
+			Utility.entityManager.persist(new Customers(customer));
+		}
+		Utility.entityTransaction.commit();
+		System.out.println("Data Saved Sucessfully!");
+	}
+	
+	private static void removeCustomer(List<Customers> newList) {
+//		Utility.entityTransaction.begin();
+//		for (int i = newList.size(); i <customerList.size() ; i++) {
+//			Utility.entityManager.remove(newList.get(i));
+//		}
+//		Utility.entityTransaction.commit();
+	}
+}

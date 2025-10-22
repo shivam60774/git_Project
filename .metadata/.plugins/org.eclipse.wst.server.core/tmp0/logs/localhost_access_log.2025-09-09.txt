@@ -1,0 +1,7 @@
+127.0.0.1 - - [09/Sep/2025:17:15:27 +0530] "GET / HTTP/1.1" 404 751
+0:0:0:0:0:0:0:1 - - [09/Sep/2025:17:15:29 +0530] "GET /demo_desk/ HTTP/1.1" 200 3029
+0:0:0:0:0:0:0:1 - - [09/Sep/2025:17:15:30 +0530] "GET /demo_desk/assets/styles/login.css HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [09/Sep/2025:17:15:30 +0530] "GET /demo_desk/assets/js/login.js HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [09/Sep/2025:17:15:30 +0530] "GET /demo_desk/assets/styles/forehead.png HTTP/1.1" 404 799
+0:0:0:0:0:0:0:1 - - [09/Sep/2025:17:15:30 +0530] "GET /favicon.ico HTTP/1.1" 404 762
+0:0:0:0:0:0:0:1 - - [09/Sep/2025:17:15:54 +0530] "POST /demo_desk/register_user HTTP/1.1" 500 2105

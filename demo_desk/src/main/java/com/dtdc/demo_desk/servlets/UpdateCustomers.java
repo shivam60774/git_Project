@@ -1,0 +1,132 @@
+package com.dtdc.demo_desk.servlets;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.persistence.Query;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.dtdc.demo_desk.model.Customers;
+import com.dtdc.demo_desk.utility.FetchCustomers;
+import com.dtdc.demo_desk.utility.Utility;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+@WebServlet(urlPatterns = "/updateCustomers")
+public class UpdateCustomers extends HttpServlet {
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String frontendList = getFrontendObject(req, resp);
+		List<String> newList = convertToList(frontendList);
+		List<String> oldList = FetchCustomers.getCustomerList();
+
+		// 3️ Use the data (e.g., save to DB)
+		System.out.println("Received Customers: " + newList);
+		updateCustomerData(oldList, newList);
+
+		// 4️ Send response back to frontend
+		try (PrintWriter out = resp.getWriter()) {
+			out.write("{\"status\": \"success\", \"count\": " + newList.size() + "}");
+		}
+	}
+
+	private static String getFrontendObject(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// Set encoding and content type
+		req.setCharacterEncoding("UTF-8");
+		resp.setContentType("application/json");
+
+		// 1️ Read JSON body from the request
+		StringBuilder jsonBuffer = new StringBuilder();
+		String line;
+		try (BufferedReader reader = req.getReader()) {
+			while ((line = reader.readLine()) != null) {
+				jsonBuffer.append(line);
+			}
+		}
+		String json = jsonBuffer.toString();
+
+		return json;
+	}
+
+	private static List<String> convertToList(String json) {
+		// 2️ Parse JSON → List<String> using Gson
+		Gson gson = new Gson();
+		Type listType = new TypeToken<List<String>>() {
+		}.getType();
+		List<String> newList = gson.fromJson(json, listType);
+		return newList;
+	}
+
+	private static void updateCustomerData(List<String> oldList, List<String> newList) {
+
+		if (oldList.size() > newList.size()) {
+			for (String string : newList) {
+				if (oldList.contains(string)) {
+					oldList.remove(string);
+				}
+			}
+			removeCustomer(oldList);
+
+		} else if (oldList.size() < newList.size()) {
+			for (String string : oldList) {
+				if (newList.contains(string)) {
+					newList.remove(string);
+				}
+			}
+			addCustomer(newList);
+		}
+
+	}
+
+	private static void addCustomer(List<String> differenceList) {
+
+		if (Utility.entityTransaction.isActive()) {
+			Utility.entityTransaction.rollback();
+		}
+		try {
+			Utility.entityTransaction.begin();
+			for (String customer : differenceList) {
+				Utility.entityManager.persist(new Customers(customer));
+			}
+			Utility.entityTransaction.commit();
+			System.out.println("Data Saved Sucessfully!");
+		} catch (Exception e) {
+			if (Utility.entityTransaction.isActive()) {
+				Utility.entityTransaction.rollback();
+			}
+			e.printStackTrace();
+		} 
+	}
+
+	private static void removeCustomer(List<String> differenceList) {
+		for (String name : differenceList) {
+			Customers customer = (Customers) Utility.entityManager.createQuery("SELECT c FROM Customers c WHERE c.name =: name")
+					.setParameter("name", name).getSingleResult();
+			if (customer != null) {
+				try {
+					Utility.entityTransaction.begin();
+					Utility.entityManager.remove(customer);
+					Utility.entityTransaction.commit();
+				} catch (Exception e) {
+					if (Utility.entityTransaction.isActive()) {
+						Utility.entityTransaction.rollback();
+					}
+					e.printStackTrace();
+				}
+				
+			}
+		}
+	}
+	
+	
+}
