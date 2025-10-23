@@ -46,6 +46,13 @@ function showRegister() {
     setFormState(registerForm, loginForm);
 }
 
+const btn = document.getElementById("forgot");
+
+btn.addEventListener("click", function(event) {
+  event.preventDefault();
+  alert("Even I dont know 😁 , SORRY!");
+});
+
 function showLogin() {
     container.classList.add('rotate');
     overlay.classList.remove('moveLeft');
